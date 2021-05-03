@@ -132,11 +132,11 @@ SELECT block_timestamp, log_index, delta_pool_shares, event
       ,'' as token1 -- not needed for v1 events
       ,address, pair, delta_eth
 FROM uniswap_v1_events
-WHERE block_timestamp < @cutoff_timestamp
+WHERE block_timestamp < @cutoff_timestamp_v1
 UNION ALL
 SELECT block_timestamp, log_index, delta_pool_shares, event, reserve0_delta, reserve1_delta, token0, token1, address, pair, delta_eth
 FROM uniswap_v2_events
-WHERE block_timestamp < @cutoff_timestamp
+WHERE block_timestamp < @cutoff_timestamp_v1
 )
 ,maxes as (
 SELECT MAX(block_timestamp) AS block_timestamp,
