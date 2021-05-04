@@ -63,7 +63,7 @@ jobs:
         run: |
           cat ${{ matrix.schema.file }} | \
           bq --location=US --dataset_id=${{ secrets.GCP_PROJECT_ID }}:retroactive_${{ github.sha }} query \
-          --parameter='cutoff_timestamp:TIMESTAMP:2021-05-03 13:56:33+00' \
+          --parameter='cutoff_timestamp:TIMESTAMP:2021-05-04 04:00:00+00' \
           --parameter='cutoff_timestamp_v1:TIMESTAMP:2020-10-14 08:15:07+00' \
           --parameter='cutoff_block_number:INT64:12361638' \
           --parameter='socks_user_reward:FLOAT64:0' \
