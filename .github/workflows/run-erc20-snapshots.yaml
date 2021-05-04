@@ -1,0 +1,61 @@
+name: Run NIFTEX ERC20 Snapshots v1 and v2 assets
+
+on:
+  # manual run
+  workflow_dispatch:
+
+jobs:
+  create-dataset:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup gcloud SDK
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          version: '309.0.0'
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+
+      - name:
+        run: |
+          bq --location=US mk \
+          --dataset \
+          --default_table_expiration 604800 \
+          --description "@metalithio/retroactive-query output for commit ${{ github.sha }}" \
+          ${{ secrets.GCP_PROJECT_ID }}:retroactive_${{ github.sha }}
+
+  run-erc20-snapshot:
+    needs: create-dataset
+    runs-on: ubuntu-latest
+
+    strategy:
+      max-parallel: 1
+      matrix:
+        schema:
+          - file: "./src/12_niftex_erc20_queries.sql"
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup gcloud SDK
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          version: '309.0.0'
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+
+      - name:
+        run: |
+          cat ${{ matrix.schema.file }} | \
+          bq --location=US --dataset_id=${{ secrets.GCP_PROJECT_ID }}:retroactive_${{ github.sha }} query \
+          --parameter='cutoff_timestamp:TIMESTAMP:2021-05-04 04:00:00+00' \
+          --parameter='cutoff_timestamp_v1:TIMESTAMP:2020-10-14 08:15:07+00' \
+          --parameter='cutoff_block_number:INT64:12361638' \
+          --parameter='socks_user_reward:FLOAT64:0' \
+          --parameter='user_reward:FLOAT64:10' \
+          --parameter='total_reward:FLOAT64:1500000' \
+          --nouse_legacy_sql
+
