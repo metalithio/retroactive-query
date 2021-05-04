@@ -145,4 +145,4 @@ CREATE TABLE v1_contributors as (
     '0x1a4f649b45ffbb7c0b8dae26270cc378fb144cd8'
     )
   AND topics[SAFE_OFFSET(0)] = '0x4d154d4aae216bed6d0926db77c00df2b57c6b5ba4eee05775de20facede3a7b'
-  )
+);

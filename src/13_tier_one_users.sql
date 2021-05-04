@@ -244,5 +244,5 @@ create table tier_one_users as (
           SELECT contract
           FROM `retroactive_ed5d7c292da31b3f3568dc3c5cbb431a6b4eb4da.uniswap_contracts`
     ) and address not in ('0x0000000000000000000000000000000000000000', '0x000000000000000000000000000000000000dead');
-)
+);
 
