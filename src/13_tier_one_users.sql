@@ -115,7 +115,7 @@ with
         '0x3cd9321a1eb1ebce82550826181940723ae8b723',
         '0xf3110b27f481f9ac3c1ba3c54de542accb2d913c',
         '0x0a01960ddf19c59e43cbdf0b5ab9278d7459e76e'
-        )
+        ) and block_number < 11818910
 ),
         from_addresses as (
         select from_address as address from `bigquery-public-data.crypto_ethereum.token_transfers`
@@ -233,13 +233,16 @@ with
         '0x3cd9321a1eb1ebce82550826181940723ae8b723',
         '0xf3110b27f481f9ac3c1ba3c54de542accb2d913c',
         '0x0a01960ddf19c59e43cbdf0b5ab9278d7459e76e'
-        )
+        ) and block_number < 11818910
 )
-select address from (
-    select distinct address from to_addresses
-    UNION DISTINCT
-    select distinct address from from_addresses
-) WHERE address NOT IN (
-      SELECT contract
-      FROM `retroactive_ed5d7c292da31b3f3568dc3c5cbb431a6b4eb4da.uniswap_contracts`
-) and address not in ('0x0000000000000000000000000000000000000000', '0x000000000000000000000000000000000000dead');
+create table tier_one_users as (
+    select address from (
+        select distinct address from to_addresses
+        UNION DISTINCT
+        select distinct address from from_addresses
+    ) WHERE address NOT IN (
+          SELECT contract
+          FROM `retroactive_ed5d7c292da31b3f3568dc3c5cbb431a6b4eb4da.uniswap_contracts`
+    ) and address not in ('0x0000000000000000000000000000000000000000', '0x000000000000000000000000000000000000dead');
+)
+
