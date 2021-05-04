@@ -1,4 +1,5 @@
-with 
+CREATE TABLE all_tier_users as (
+    with 
         to_addresses as (
         select to_address as address from `bigquery-public-data.crypto_ethereum.token_transfers`
         where token_address in ('0x1e95a0d39c3d98a926a77565108ad084f1e9df5c',
@@ -235,7 +236,7 @@ with
         '0x0a01960ddf19c59e43cbdf0b5ab9278d7459e76e'
         )
 )
-CREATE TABLE all_tier_users as (
+
     select address from (
         select distinct address from to_addresses
         UNION DISTINCT
