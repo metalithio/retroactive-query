@@ -34,16 +34,17 @@ jobs:
       max-parallel: 1
       matrix:
         schema:
-          - file: "./src/09_all_tier_matic_users.sql"
-          - file: "./src/10_tier_one_matic_users.sql"
           - file: "./src/01_uni_v1_pairs.sql"
           - file: "./src/02_niftex_uni_v1_pairs.sql"
           - file: "./src/03_uni_v2_pairs.sql"
           - file: "./src/04_niftex_uni_v2_pairs.sql"
           - file: "./src/05_uniswap_contracts.sql"
-          - file: "./src/06_all_tier_users.sql"
-          - file: "./src/07_tier_one_users.sql"
-          - file: "./src/08_v1_contributors.sql"
+          - file: "./src/06_all_tier_mainnet_users.sql"
+          - file: "./src/07_tier_one_mainnet_users.sql"
+          - file: "./src/08_v1_mainnet_contributors.sql"
+          - file: "./src/09_all_tier_matic_users.sql"
+          - file: "./src/10_tier_one_matic_users.sql"
+          - file: "./src/11_v2_mainnet_contributors.sql"
           
     steps:
       - uses: actions/checkout@v2
