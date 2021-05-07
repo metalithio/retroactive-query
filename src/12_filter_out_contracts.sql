@@ -4,12 +4,15 @@ LIMIT 1000
 
 # get users by cohorts
 WITH
+tier_one_contributors as (
+    select distinct contributor as address from `niftex-retroactive-query.retroactive_6b838dd00210ba679d4e172b01e573d784dacfac.v1_contributors`
+),
 all_contributors as (
     select distinct fromAddress as address from `niftex-retroactive-query.retroactive_6b838dd00210ba679d4e172b01e573d784dacfac.v2_mainnet_contributors`
     union distinct
     select distinct toAddress as address from `niftex-retroactive-query.retroactive_6b838dd00210ba679d4e172b01e573d784dacfac.v2_mainnet_contributors`
     union distinct
-    select distinct contributor as address from `niftex-retroactive-query.retroactive_6b838dd00210ba679d4e172b01e573d784dacfac.v1_contributors`
+    select distinct address from tier_one_contributors
 ),
 tier_one_holders as (
     select distinct address from `niftex-retroactive-query.retroactive_6b838dd00210ba679d4e172b01e573d784dacfac.tier_one_mainnet_users`
@@ -34,7 +37,7 @@ all_tier_users as (
 tier_one_users as (
     select address, cohort from (
         select address, 'tier 1' as cohort from (
-            select distinct address from all_contributors
+            select distinct address from tier_one_contributors
             union distinct
             select distinct address from tier_one_holders
         )
@@ -46,4 +49,8 @@ tier_three_users as (
         select distinct address from tier_one_users
     )
 )
-select distinct address from all_tier_users;
+select distinct address from tier_one_users
+where address not in ( 
+    SELECT address FROM `bigquery-public-data.crypto_ethereum.contracts` 
+    WHERE address in ( select distinct address from tier_one_users )
+)
